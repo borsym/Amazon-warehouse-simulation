@@ -11,7 +11,7 @@ A projekt a Szoftvertechnológia (IP-18bSZTEG) tárgy keretei közt jött létre
 
 ## Fejlesztők:
 * [**Amtmann Kristóf**](https://github.com/Anti20-creator)
-* **Borsy Máté** 
+* [**Borsy Máté** ](https://github.com/borsym)
 * [**Bur Bence**](https://github.com/kleinerbur-elte)
 
 *© Pindur PandUrak 2021*
