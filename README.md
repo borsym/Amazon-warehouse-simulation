@@ -5,8 +5,7 @@ Az AMZN applikáció egy raktár automatizált működését szimulálja az algo
 A projekt a Szoftvertechnológia (IP-18bSZTEG) tárgy keretei közt jött létre.
 
 ## Linkek:
-* [**Dokumentáció (pdf)**](https://szofttech.inf.elte.hu/szt-ab-2020212/group-04/pindur-pandurak/-/blob/master/amzn_dokumentacio.pdf)
-* [**Dokumentáció (Wiki)**](https://szofttech.inf.elte.hu/szt-ab-2020212/group-04/pindur-pandurak/-/wikis/home)
+* [**Dokumentáció (pdf)**](https://github.com/borsym/Amazon-warehouse-simulation/blob/main/amzn_dokumentacio.pdf)
 * [**Jira board**](https://pindurpandurak.atlassian.net/jira/software/projects/AMZN/boards/1/roadmap?shared=&atlOrigin=eyJpIjoiZTk3ZjA3YWY5NWVkNDI2YWI0ZTg5YmVkZDA0OTBhZmUiLCJwIjoiaiJ9) (regisztrálás szükséges; alternatívaként a sprinteket xml-be exportálva feltölthetjük a repositoryba)
 
 ## Fejlesztők:
