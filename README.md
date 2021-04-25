@@ -6,7 +6,6 @@ A projekt a Szoftvertechnológia (IP-18bSZTEG) tárgy keretei közt jött létre
 
 ## Linkek:
 * [**Dokumentáció (pdf)**](https://github.com/borsym/Amazon-warehouse-simulation/blob/main/amzn_dokumentacio.pdf)
-* [**Jira board**](https://pindurpandurak.atlassian.net/jira/software/projects/AMZN/boards/1/roadmap?shared=&atlOrigin=eyJpIjoiZTk3ZjA3YWY5NWVkNDI2YWI0ZTg5YmVkZDA0OTBhZmUiLCJwIjoiaiJ9) (regisztrálás szükséges; alternatívaként a sprinteket xml-be exportálva feltölthetjük a repositoryba)
 
 ## Fejlesztők:
 * [**Amtmann Kristóf**](https://github.com/Anti20-creator)
