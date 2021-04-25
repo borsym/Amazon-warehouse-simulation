@@ -10,9 +10,9 @@ A projekt a Szoftvertechnológia (IP-18bSZTEG) tárgy keretei közt jött létre
 * [**Jira board**](https://pindurpandurak.atlassian.net/jira/software/projects/AMZN/boards/1/roadmap?shared=&atlOrigin=eyJpIjoiZTk3ZjA3YWY5NWVkNDI2YWI0ZTg5YmVkZDA0OTBhZmUiLCJwIjoiaiJ9) (regisztrálás szükséges; alternatívaként a sprinteket xml-be exportálva feltölthetjük a repositoryba)
 
 ## Fejlesztők:
-* **Amtmann Kristóf** (alias Puszedli)
-* **Borsy Máté** (alias Sziporka)
-* **Bur Bence** (alias Csuporka)
+[* **Amtmann Kristóf**](https://github.com/Anti20-creator)
+* **Borsy Máté** 
+[* **Bur Bence**](https://github.com/kleinerbur-elte)
 
 *© Pindur PandUrak 2021*
 "# Amazon-warehouse-simulation" 
