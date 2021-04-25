@@ -1,0 +1,56 @@
+﻿<Window x:Class="AMZN.View.CreateSimulation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AMZN.View"
+        mc:Ignorable="d"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="CreateSimulation"
+        MinHeight="150" MaxHeight="150"
+        MinWidth="275" MaxWidth="275">
+    <Grid>
+        <StackPanel>
+            <DockPanel>
+                <TextBlock Text="Width: "
+                           FontSize="15"
+                           Width="45"
+                           DockPanel.Dock="Left"
+                           Margin="30 10 10 0"/>
+                <TextBox x:Name="width"
+                         FontSize="15"
+                         Width="160"
+                         DockPanel.Dock="Right"
+                         Margin="0 10 10 10"
+                         Text="6"
+                         TextAlignment="Right"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Height: "
+                           Width="50"
+                           FontSize="15"
+                           DockPanel.Dock="Left"
+                           Margin="25 0 10 0"/>
+                <TextBox x:Name="height" 
+                         Width="160"
+                         FontSize="15"
+                         DockPanel.Dock="Right"
+                         Margin="0 0 10 10"
+                         Text="6"
+                         TextAlignment="Right"/>
+            </DockPanel>
+            <DockPanel>
+                <Button Content="OK" Click="ConfirmNewSize" 
+                        Width="100" Height="30"
+                        HorizontalAlignment="Center"
+                        Margin="10 0 13 10"
+                        DockPanel.Dock="Right"/>
+                <Button Content="Cancel" Click="CancelNewSize"
+                        Width="100" Height="30"
+                        HorizontalAlignment="Center"
+                        Margin="10 0 12 10"
+                        DockPanel.Dock="Left"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>

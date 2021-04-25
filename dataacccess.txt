@@ -1,0 +1,381 @@
+using AMZN.Model;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace AMZN.Persistence
+{
+    public class DataAccess : IDataAccess
+    {
+        public SaveLoadData LoadAsync(String path)
+        {
+            SaveLoadData result = new SaveLoadData();
+            result.pods = new Dictionary<Coords, Pod>();
+            result.stations = new Dictionary<Coords, Station>();
+            result.dockers = new Dictionary<Coords, Docker>();
+            result.robots = new Dictionary<Coords, Robot>();
+            try
+            {
+                using (StreamReader reader = new StreamReader(path)) // fájl megnyitása
+                {
+                    String line = reader.ReadLine();
+                    String[] numbers = line.Split(' '); // beolvasunk egy sort, és a szóköz mentén széttöredezzük
+                    Int32 tableSizeN = Int32.Parse(numbers[0]); // beolvassuk a tábla méretét
+                    Int32 tableSizeM = Int32.Parse(numbers[1]);
+                    result.table = new Table(tableSizeN, tableSizeM); // létrehozzuk a táblát
+                    line = reader.ReadLine();
+                    numbers = line.Split(' ');
+                    result.allBatteryUsed = Convert.ToInt32(numbers[0].Trim());
+                    result.time = Convert.ToInt32(numbers[1].Trim());
+
+                    /*
+                     * itt egy EOF el kéne olvasni valószínûleg, mert nem tudjuk mikor lesz vége a filenak
+                     * meg az hogy beleírjuk sztm hogy empty, nem fog akkor file foglalást okozni
+                     * mert egy tablat lére kell hozni és be kell állítani az értékeket emptyre vagy valahol meg kell ezt csinálni
+                     * és itt pedig, ha eofel olvasunk akkor nem tudjuk párhuzamosan beállítani az értékeket a pályán
+                     * ezzel azt akarom mondani hogy kellesz akkor egy dupla for ahol beállítjuk a pályát
+                     * és egy EOF amivel beállítjuk a pályán az adott entitásokat
+                     * => ezért gondolom azt hogy egyszerûbb lenne ha mindent kiírnánk és a dupla for/EOF egybe kerülne, hátránya hogy kicsit nagyobb a file mért
+                     * de maradthatunk a másiknál egyik se eget rentgetõ gyorsítás
+                     12 15
+                     Robot 0 0
+                     Station 0 4
+                     Docker 1 5
+                    */
+                    while (!reader.EndOfStream)
+                    {
+                        line = reader.ReadLine().Trim();
+                        String[] splitted = line.Split(' ');
+
+                        if (splitted[0] == "R")
+                        {
+                            //R (x, y, id, akku)
+                            for (int i = 1; i < splitted.Length; ++i)
+                            {
+                                //zárójelek törlése
+                                splitted[i] = splitted[i].Remove(splitted[i].Length - 1);
+                                splitted[i] = splitted[i].Remove(0, 1);
+
+                                String[] data = splitted[i].Split(',');
+                                int x = Convert.ToInt32(data[0].Trim());
+                                int y = Convert.ToInt32(data[1].Trim());
+                                int id = Convert.ToInt32(data[2].Trim());
+                                int battery = Convert.ToInt32(data[3].Trim());
+                                result.robots.Add(new Coords(x, y), new Robot(new Coords(x, y), result.robots.Count));
+                                result.table.SetValue(x, y, Types.ROBOT);
+
+                            }
+                        }
+                        else if (splitted[0] == "P")
+                        {
+                            for (var i = 1; i < splitted.Length; ++i)
+                            {
+                                //zárójelek törlése
+                                splitted[i] = splitted[i].Remove(splitted[i].Length - 1);
+                                splitted[i] = splitted[i].Remove(0, 1);
+
+                                String[] data = splitted[i].Split(',');
+                                int x = Convert.ToInt32(data[0].Trim());
+                                int y = Convert.ToInt32(data[1].Trim());
+
+                                String list = data[2].Trim();
+
+                                //zárójelek elhagyása
+                                list = list.Remove(list.Length - 1);
+                                list = list.Remove(0, 1);
+
+                                String[] listElements = list.Split(';');
+
+                                Pod pod = new Pod(x, y, new List<int>());
+                                foreach (var item in listElements)
+                                {
+                                    pod.Add(Convert.ToInt32(item));
+                                }
+
+                                result.pods.Add(new Coords(x, y), pod);
+                                switch(result.table[x, y])
+                                {
+                                    case Types.ROBOT:
+                                        result.table.SetValue(x, y, Types.ROBOT_UNDER_POD);
+                                        break;
+                                    default:
+                                        result.table.SetValue(x, y, Types.POD);
+                                        break;
+                                }
+
+                            }
+                        }
+                        else if (splitted[0] == "S")
+                        {
+                            //R (x, y, akku)
+                            for (var i = 1; i < splitted.Length; ++i)
+                            {
+                                //zárójelek elhagyása
+                                splitted[i] = splitted[i].Remove(splitted[i].Length - 1);
+                                splitted[i] = splitted[i].Remove(0, 1);
+
+                                String[] data = splitted[i].Split(',');
+                                int x = Convert.ToInt32(data[0].Trim());
+                                int y = Convert.ToInt32(data[1].Trim());
+                                int id = Convert.ToInt32(data[2].Trim());
+
+                                result.stations.Add(new Coords(x, y), new Station(new Coords(x, y), id));
+
+                                switch(result.table[x, y])
+                                {
+                                    case Types.ROBOT:
+                                        result.table.SetValue(x, y, Types.ROBOT_ON_STATION);
+                                        break;
+                                    default:
+                                        result.table.SetValue(x, y, Types.STATION);
+                                        break;
+                                }
+                            }
+                        }
+                        else if (splitted[0] == "D")
+                        {
+                            //R (x, y, akku)
+                            for (var i = 1; i < splitted.Length; ++i)
+                            {
+                                //zárójelek elhagyása
+                                splitted[i] = splitted[i].Remove(splitted[i].Length - 1);
+                                splitted[i] = splitted[i].Remove(0, 1);
+
+                                String[] data = splitted[i].Split(',');
+                                int x = Convert.ToInt32(data[0].Trim());
+                                int y = Convert.ToInt32(data[1].Trim());
+
+                                result.dockers.Add(new Coords(x, y), new Docker(new Coords(x, y)));
+                                switch(result.table[x, y])
+                                {
+                                    case Types.ROBOT:
+                                        result.table.SetValue(x, y, Types.ROBOT_ON_DOCKER);
+                                        break;
+                                    default:
+                                        result.table.SetValue(x, y, Types.DOCKER);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }
+            catch
+            {
+                throw new DataException();
+            }
+        }
+
+        void IDataAccess.Save(string path, SaveLoadData data)  // mondjuk nem vágom miért írtam konstruktorba a modelt xd
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(path)) // fájl megnyitása
+                {
+                    //tábla méret kiírása
+                    writer.WriteLine(data.table.SizeX.ToString() + " " + data.table.SizeY.ToString());
+
+                    //összes energia és idõ kiírása
+                    writer.WriteLine(data.allBatteryUsed.ToString() + " " + data.time.ToString());
+
+                    writer.Write("R ");
+                    foreach (var robot in data.robots)
+                    {
+                        writer.Write("(" +
+                                            robot.Key.X.ToString() + "," +
+                                            robot.Key.Y.ToString() + "," +
+                                            robot.Value.Id.ToString() + "," +
+                                            robot.Value.BatteryLevel.ToString() + ") ");
+                    }
+                    writer.Write("\n"); // end of writing robots
+
+
+                    writer.Write("P ");
+                    foreach(var pod in data.pods)
+                    {
+                        writer.Write("(" +
+                                            pod.Key.X.ToString() + "," +
+                                            pod.Key.Y.ToString() + ",[");
+                        for(int i = 0; i < pod.Value.Items.Count; ++i)
+                        {
+                            if(i == pod.Value.Items.Count - 1)
+                            {
+                                writer.Write(pod.Value.Items[i].ToString() + "]) ");
+                            }
+                            else
+                            {
+                                writer.Write(pod.Value.Items[i].ToString() + ";");
+                            }
+                        }
+                    }
+                    writer.Write("\n"); // end of writing pods
+
+
+                    writer.Write("S ");
+                    foreach (var station in data.stations)
+                    {
+                        writer.Write("(" +
+                                            station.Key.X.ToString() + "," +
+                                            station.Key.Y.ToString() + "," +
+                                            station.Value.Id.ToString() + ") ");
+                    }
+                    writer.Write("\n"); // end of writing staions
+
+
+                    writer.Write("D ");
+                    foreach (var docker in data.dockers)
+                    {
+                        writer.Write("(" +
+                                            docker.Key.X.ToString() + "," +
+                                            docker.Key.Y.ToString() + ") ");
+                    }
+                    writer.Write("\n"); // end of writing staions
+
+                }
+            }
+            catch
+            {
+                throw new DataException();
+            }
+        }
+    }
+}
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using AMZN.ViewModel;
+using AMZN.Model;
+using System.Windows.Threading;
+using Microsoft.Win32;
+using AMZN.Persistence;
+
+namespace AMZN
+{
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+        private IDataAccess _dataAccess;
+        private ViewModel.ViewModel _viewModel;
+        private MainWindow _view;
+        private Model.Model _model;
+        private DispatcherTimer _timer;
+        private bool _startStop;
+        public App()
+        {
+            Startup += new StartupEventHandler(App_Startup);
+        }
+
+        private void App_Startup(object sender, StartupEventArgs e)
+        {
+            _model = new Model.Model();
+            _dataAccess = new DataAccess();
+            _model.DataAccess = _dataAccess;
+            _model.SimulationEnded += _model_SimulationEnded;
+            _viewModel = new ViewModel.ViewModel(_model);
+            _viewModel.OnStartPauseSimulation += new EventHandler(ViewModel_StartPause);
+            _viewModel.loadMap += new EventHandler(ViewModel_loadMap);
+            _viewModel.saveMap += new EventHandler(ViewModel_saveMap);
+            _view = new MainWindow();
+            _view.DataContext = _viewModel;
+            //_view.Closing += new System.ComponentModel.CancelEventHandler(View_Closing); // eseménykezelés a bezáráshoz
+
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromMilliseconds(100);
+            _timer.Tick += new EventHandler(Timer_Tick);
+    
+
+            _view.Show();
+        }
+
+        private void ViewModel_saveMap(object sender, System.EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog openFileDialog = new SaveFileDialog();
+                openFileDialog.Title = "AMZN tábla mentése";
+                openFileDialog.Filter = "AMZN tábla|*.txt";
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    SaveLoadData data = new SaveLoadData(_model.Table, _model.Robots, _model.Pods, _model.Stations, _model.Dockers,
+                        _model.AllBatteryUsed, _model.AllBatteryUsed);
+                    _dataAccess.Save(openFileDialog.FileName, data);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("A fájl mentése sikertelen!", "AMZN", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ViewModel_loadMap(object sender, System.EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Title = "AMZN tábla betöltése";
+                openFileDialog.Filter = "AMZN tábla|*.txt";
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    SaveLoadData result = _model.DataAccess.LoadAsync(openFileDialog.FileName);
+                    _model.AllBatteryUsed = result.allBatteryUsed;
+                    _model.AllSteps = result.time;
+                    _model.Robots = result.robots;
+                    _model.Pods = result.pods;
+                    _model.Stations = result.stations;
+                    _model.Dockers = result.dockers;
+                    _model.Table = result.table;
+                    _viewModel.OnRefreshTable();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("A fájl betöltése sikertelen!", "AMZN", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void _model_SimulationEnded(object sender, Model.EventArgs e)
+        {
+            _timer.Stop();
+            MessageBox.Show("The simulation is over");
+        }
+
+        private void Timer_Tick(object sender, System.EventArgs e)
+        {
+            _model.TimerCount++;
+            _viewModel.StepSimulation();
+        }
+
+        private void ViewModel_StartPause(object sender, System.EventArgs e)
+        {
+            _timer.Start();
+            _model.SayHi();
+            foreach (var item in _model.Robots)
+            {
+                _model.FindNearestPod(item.Value);
+            }
+            
+        }
+    }
+}

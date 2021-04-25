@@ -1,0 +1,37 @@
+# Default image (https://hub.docker.com/_/microsoft-dotnet-core-sdk/)
+image: mcr.microsoft.com/dotnet/core/sdk:3.1
+
+stages:
+  - build
+  - test
+
+before_script:
+  - dotnet --version
+
+# Build
+build_model:
+  stage: build
+  image: mcr.microsoft.com/dotnet/framework/sdk:4.8
+  tags: [windows]
+  script:
+    - echo "Building"
+    - dotnet build AMZN/AMZN/AMZN.csproj
+
+build_view:
+  stage: build
+  # Windows-based docker images for .NET Framework:
+  # https://hub.docker.com/_/microsoft-dotnet-framework-sdk/
+  image: mcr.microsoft.com/dotnet/framework/sdk:4.8
+  tags: [windows]
+  script:
+    - dotnet build AMZN/AMZN.sln
+
+# Test
+test_model:
+  stage: test 
+  image: mcr.microsoft.com/dotnet/framework/sdk:4.8
+  tags: [windows]
+  script: # kaptam egy errort hogy buildelni kell az /AMZN/AMZN/AMZN.csproj-t
+    - echo "Testing"
+    #- dotnet build AMZN/AMZN/AMZN.csproj  
+    - dotnet test AMZN/AMZN.UnitTests

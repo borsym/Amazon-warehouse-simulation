@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMZN", "AMZN\AMZN.csproj", "{70CDF26A-1099-40A4-9668-44B36DCF741B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMZN.UnitTests", "AMZN.UnitTests\AMZN.UnitTests.csproj", "{DF18C05F-75FF-4D0E-9506-7E9842B8C1D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMZNServer", "AMZNServer\AMZNServer.csproj", "{586FA018-8159-4D6A-8CEC-7F854D2CAFF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70CDF26A-1099-40A4-9668-44B36DCF741B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70CDF26A-1099-40A4-9668-44B36DCF741B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70CDF26A-1099-40A4-9668-44B36DCF741B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70CDF26A-1099-40A4-9668-44B36DCF741B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF18C05F-75FF-4D0E-9506-7E9842B8C1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF18C05F-75FF-4D0E-9506-7E9842B8C1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF18C05F-75FF-4D0E-9506-7E9842B8C1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF18C05F-75FF-4D0E-9506-7E9842B8C1D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{586FA018-8159-4D6A-8CEC-7F854D2CAFF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{586FA018-8159-4D6A-8CEC-7F854D2CAFF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{586FA018-8159-4D6A-8CEC-7F854D2CAFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{586FA018-8159-4D6A-8CEC-7F854D2CAFF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1EC62C8-57C8-4B1A-A728-A6F6D66AD1FB}
+	EndGlobalSection
+EndGlobal
