@@ -31,7 +31,6 @@ test_model:
   stage: test 
   image: mcr.microsoft.com/dotnet/framework/sdk:4.8
   tags: [windows]
-  script: # kaptam egy errort hogy buildelni kell az /AMZN/AMZN/AMZN.csproj-t
+  script: 
     - echo "Testing"
-    #- dotnet build AMZN/AMZN/AMZN.csproj  
     - dotnet test AMZN/AMZN.UnitTests
